@@ -1,0 +1,104 @@
+---
+description: Global Android/Kotlin standards (Compose, UDF, Hilt, Navigation 3)
+alwaysApply: true
+---
+# Android Kotlin
+
+Generate code, corrections, and refactorings that follow modern Kotlin and Android practice.
+
+**Sources of truth (in order):**
+
+1. `docs/architecture.md` — layers, packages, DI, integrations
+2. `docs/prd/` — product behavior for the current delivery
+3. [Android Architecture Recommendations](https://developer.android.com/topic/architecture/recommendations)
+4. [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html)
+
+If project docs and a general habit conflict, **project docs win**.
+
+## Kotlin
+
+- Use English for all code and documentation comments.
+- Prefer `val` and immutable data. Use `data class` for models.
+- Declare types on public APIs (parameters, return types, exposed properties). Allow local type inference.
+- Avoid `Any` when a concrete type or sealed hierarchy fits.
+- Follow JetBrains naming: PascalCase for types and `.kt` files matching the primary type (`ProductViewModel.kt`); camelCase for functions and properties; `SCREAMING_SNAKE_CASE` for `const val`; packages lowercase without underscores.
+- Prefer composition over inheritance. Declare interfaces for contracts. Keep classes small and single-purpose.
+- Keep functions short and single-purpose. Name with a verb. Booleans: `isX`, `hasX`, `canX`. Prefer early returns over deep nesting.
+- Prefer few typed parameters; use a `data class` only when the grouping is real, not as a default RO-RO pattern.
+- Prefer `val` over mutable state. Avoid blank lines inside a function body.
+- Use exceptions for unexpected failures. For expected domain/API outcomes (not found, validation, network), prefer typed results or sealed outcomes over throwing. Catch to recover or add context; otherwise let a higher handler deal with it.
+
+## Android architecture (Google-aligned)
+
+- Single module `:app` and single-Activity (`MainActivity`) unless `docs/architecture.md` says otherwise.
+- **UI layer:** Jetpack Compose + Material 3. Do not use XML layouts, Fragments, ViewBinding, or ConstraintLayout for new screens.
+- **Navigation:** Jetpack **Navigation 3** (`NavDisplay` / back stack / type-safe keys). Do not introduce Navigation Compose (Nav2) in new code.
+- **Data layer:** repositories are the only entry point. ViewModels must not talk to Retrofit, Room DAOs, DataStore, or device APIs directly.
+- **Domain layer:** optional. Do **not** add use-case / domain packages by default. Introduce them only when logic is reused across ViewModels or a ViewModel becomes too complex — per Google guidance for larger apps. If present, keep domain pure JVM (no Android, Retrofit, or Room).
+- **UDF / MVVM:** UI calls ViewModel methods; ViewModel exposes immutable `StateFlow` UI state (prefer a single `uiState`, or sealed `*UiState` when states are exclusive). Do not use MVI reducers/intents as the default pattern. Do not emit one-shot “events” from ViewModel to UI — handle the action and update `uiState`.
+- Collect with `collectAsStateWithLifecycle`. Prefer `StateFlow` over LiveData for new Compose code. Use `stateIn(..., SharingStarted.WhileSubscribed(5_000), ...)` when bridging repository Flows.
+- ViewModels at **screen / destination** level only. Reusable composables use plain state holders + hoisting, not ViewModels. Use `ViewModel`, not `AndroidViewModel`. Keep ViewModels free of `Activity`, `Context`, and `Resources`.
+- Async work in `viewModelScope` with Coroutines and Flow.
+- DI: Hilt (`@HiltAndroidApp`, `@HiltViewModel`, constructor injection).
+
+## Package layout
+
+Organize by **feature/function**, with layer subpackages when useful (see `docs/architecture.md`):
+
+```text
+core/di/
+core/network/
+core/database/
+core/ui/theme/
+featureOrArea/
+  data/          # repository, data sources, mappers, models as needed
+  ui/            # screens, screen ViewModels, UiState
+navigation/
+```
+
+Do not invent a global mandatory `domain/` tree. Shared UI pieces live under a clear shared package (e.g. `core/ui` or `ui/components`) only when reused.
+
+## Networking, storage, on-device
+
+- Remote: Retrofit + OkHttp + kotlinx.serialization (or the stack fixed in `docs/architecture.md`).
+- Honor API/client policies from architecture (e.g. required User-Agent).
+- Local persistence: Room (or DataStore when the architecture specifies) behind repositories.
+- Map DTOs/entities to app models in the data layer before the UI needs them.
+- On-device ML/camera (e.g. CameraX, ML Kit) stays on device; do not upload frames/images unless the PRD explicitly requires it.
+- Do not add Coil/image loading, auth, or analytics unless product docs include them.
+
+## UI composition pattern
+
+```kotlin
+// Good: screen ViewModel + StateFlow + lifecycle-aware collect
+@HiltViewModel
+class ProductViewModel @Inject constructor(
+    private val productRepository: ProductRepository,
+) : ViewModel() {
+    private val _uiState = MutableStateFlow<ProductUiState>(ProductUiState.Idle)
+    val uiState: StateFlow<ProductUiState> = _uiState.asStateFlow()
+
+    fun lookup(code: String): Unit {
+        viewModelScope.launch {
+            _uiState.value = ProductUiState.Loading
+            _uiState.value = productRepository.lookup(code).toUiState()
+        }
+    }
+}
+
+@Composable
+fun ProductRoute(viewModel: ProductViewModel = hiltViewModel()) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    ProductScreen(uiState = uiState, onLookup = viewModel::lookup)
+}
+
+// Bad: MVI boilerplate, XML/ViewBinding, LiveData for new Compose,
+// ViewModel calling Retrofit/DAO, or Navigation Compose (Nav2) for new screens
+```
+
+## Testing
+
+- Follow Arrange-Act-Assert. Name fixtures clearly: `inputX`, `fakeX` / `mockX`, `actualX`, `expectedX`.
+- JVM unit tests for mappers/repositories and screen ViewModels (JUnit, Turbine, kotlinx-coroutines-test).
+- Prefer **fakes** over mocks (Google testing guidance). Use MockK when a fake is impractical.
+- Do not require Robolectric for pure ViewModel/mapper tests. Do not use Flutter widget testing conventions.
