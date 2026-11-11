@@ -1,7 +1,7 @@
 # PRD — AlertaRótulo
 
 > Tipo: PRD inicial · Data: 2026-11-06
-> **Status:** Aguardando implementação
+> **Status:** Implementada
 >
 > <!-- Valores possíveis: "Aguardando implementação" | "Implementada". Atualize para "Implementada" quando todas as specs estiverem concluídas. -->
 
