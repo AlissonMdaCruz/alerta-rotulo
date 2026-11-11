@@ -4,12 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,10 +19,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.amdcruz.alertarotulo.R
+import com.amdcruz.alertarotulo.core.ui.components.PrimaryActionButton
+import com.amdcruz.alertarotulo.core.ui.components.SecondaryActionButton
 import com.amdcruz.alertarotulo.scan.BarcodeValidator
 
 @Composable
@@ -35,6 +41,7 @@ fun ManualEntryScreen(
     var codeInput by rememberSaveable { mutableStateOf("") }
     var showValidationError by rememberSaveable { mutableStateOf(false) }
     val normalizedCode = BarcodeValidator.normalize(codeInput)
+    val invalidMessage = stringResource(R.string.manual_entry_invalid_code)
 
     fun submit() {
         val validated = BarcodeValidator.validate(codeInput)
@@ -57,6 +64,7 @@ fun ManualEntryScreen(
             Text(
                 text = stringResource(R.string.manual_entry_title),
                 style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.semantics { heading() },
             )
             Text(
                 text = stringResource(R.string.manual_entry_body),
@@ -68,11 +76,23 @@ fun ManualEntryScreen(
                     codeInput = BarcodeValidator.normalize(value)
                     showValidationError = false
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 56.dp)
+                    .then(
+                        if (showValidationError) {
+                            Modifier.semantics {
+                                error(invalidMessage)
+                                liveRegion = LiveRegionMode.Assertive
+                            }
+                        } else {
+                            Modifier
+                        },
+                    ),
                 label = { Text(stringResource(R.string.manual_entry_code_label)) },
                 supportingText = {
                     if (showValidationError) {
-                        Text(stringResource(R.string.manual_entry_invalid_code))
+                        Text(invalidMessage)
                     } else {
                         Text(stringResource(R.string.manual_entry_formats_hint))
                     }
@@ -85,19 +105,15 @@ fun ManualEntryScreen(
                 ),
                 keyboardActions = KeyboardActions(onDone = { submit() }),
             )
-            Button(
+            PrimaryActionButton(
+                text = stringResource(R.string.action_lookup_product),
                 onClick = { submit() },
                 enabled = normalizedCode.isNotEmpty(),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(stringResource(R.string.action_lookup_product))
-            }
-            OutlinedButton(
+            )
+            SecondaryActionButton(
+                text = stringResource(R.string.action_back),
                 onClick = onBack,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(stringResource(R.string.action_back))
-            }
+            )
         }
     }
 }
