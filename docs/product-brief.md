@@ -133,7 +133,7 @@ O MVP é considerado bem-sucedido quando:
 | **Estrutura** | Um módulo de app; organização por função (packages). |
 | **Imagens** | Foto do produto (URL da base), se existir; imagem capturada do código **nunca** sobe. |
 
-Detalhamento de comportamento de telas, fluxos e contratos fica no **PRD**. Escolhas de camadas, DI e pacotes ficam no **documento de arquitetura** — ambos fora deste brief.
+Detalhamento de comportamento de telas, fluxos e contratos fica no **PRD**. Escolhas de camadas, DI e pacotes ficam no **documento de arquitetura**. Orientação visual para telas fica em **`docs/design/style-reference.md`** (referência, não obrigação literal).
 
 ---
 
@@ -155,6 +155,7 @@ Detalhamento de comportamento de telas, fluxos e contratos fica no **PRD**. Esco
 | **Product Brief** (este arquivo) | Visão, escopo, sucesso, restrições de produto | Atual |
 | **PRD** | Comportamento detalhado por tela/fluxo, copy, estados, critérios de aceite | Atual (`docs/prd/alerta-rotulo.md`) |
 | **Arquitetura** | Camadas, pacotes, DI, decisões técnicas | Atual (`docs/architecture.md`) |
+| **Design (style reference)** | Cores, tipografia e linguagem visual para telas | Atual (`docs/design/style-reference.md`) — orientação, não contrato rígido |
 
 ---
 

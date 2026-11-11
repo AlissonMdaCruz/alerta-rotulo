@@ -15,6 +15,7 @@ MVP em preparação. O repositório contém a estrutura inicial do Android Studi
 | [`docs/product-brief.md`](docs/product-brief.md) | Visão, escopo e critérios de sucesso |
 | [`docs/prd/alerta-rotulo.md`](docs/prd/alerta-rotulo.md) | Comportamento, fluxos, specs e aceite |
 | [`docs/architecture.md`](docs/architecture.md) | Camadas, stack, pacotes e integrações |
+| [`docs/design/style-reference.md`](docs/design/style-reference.md) | Referência visual para telas (orientação, não contrato rígido) |
 
 ## Stack (direção)
 
