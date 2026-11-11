@@ -10,7 +10,10 @@ data object ScanRoute : NavKey
 data object ManualEntryRoute : NavKey
 
 @Serializable
-data class ProductRoute(val code: String) : NavKey
+data class ProductRoute(
+    val code: String,
+    val fromHistory: Boolean = false,
+) : NavKey
 
 @Serializable
 data object HistoryRoute : NavKey

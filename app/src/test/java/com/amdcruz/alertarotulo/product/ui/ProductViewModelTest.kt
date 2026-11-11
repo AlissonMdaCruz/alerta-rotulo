@@ -33,8 +33,12 @@ class ProductViewModelTest {
 
     @Test
     fun lookup_whenProductMissing_exposesNotFoundState() = runTest {
-        val fakeRepository = FakeProductRepository { ProductLookupResult.NotFound }
-        val viewModel = ProductViewModel(productRepository = fakeRepository)
+        val fakeProductRepository = FakeProductRepository { ProductLookupResult.NotFound }
+        val fakeHistoryRepository = FakeHistoryRepository()
+        val viewModel = ProductViewModel(
+            productRepository = fakeProductRepository,
+            historyRepository = fakeHistoryRepository,
+        )
 
         viewModel.uiState.test {
             assertEquals(ProductUiState.Idle, awaitItem())
@@ -46,13 +50,18 @@ class ProductViewModelTest {
             val actual = awaitItem()
             assertTrue(actual is ProductUiState.NotFound)
             assertEquals("0000000000000", (actual as ProductUiState.NotFound).code)
+            assertTrue(fakeHistoryRepository.savedProducts.isEmpty())
         }
     }
 
     @Test
     fun lookup_whenNetworkFails_exposesNetworkErrorState() = runTest {
-        val fakeRepository = FakeProductRepository { ProductLookupResult.NetworkError }
-        val viewModel = ProductViewModel(productRepository = fakeRepository)
+        val fakeProductRepository = FakeProductRepository { ProductLookupResult.NetworkError }
+        val fakeHistoryRepository = FakeHistoryRepository()
+        val viewModel = ProductViewModel(
+            productRepository = fakeProductRepository,
+            historyRepository = fakeHistoryRepository,
+        )
 
         viewModel.uiState.test {
             assertEquals(ProductUiState.Idle, awaitItem())
@@ -64,11 +73,12 @@ class ProductViewModelTest {
             val actual = awaitItem()
             assertTrue(actual is ProductUiState.NetworkError)
             assertEquals("3017620422003", (actual as ProductUiState.NetworkError).code)
+            assertTrue(fakeHistoryRepository.savedProducts.isEmpty())
         }
     }
 
     @Test
-    fun lookup_whenProductExists_exposesSuccessState() = runTest {
+    fun lookup_whenProductExists_exposesSuccessAndSavesHistory() = runTest {
         val product = Product(
             code = "3017620422003",
             name = "Nutella",
@@ -78,10 +88,14 @@ class ProductViewModelTest {
             nutriScore = 'E',
             consultedAtEpochMillis = 1L,
         )
-        val fakeRepository = FakeProductRepository {
+        val fakeProductRepository = FakeProductRepository {
             ProductLookupResult.Success(product)
         }
-        val viewModel = ProductViewModel(productRepository = fakeRepository)
+        val fakeHistoryRepository = FakeHistoryRepository()
+        val viewModel = ProductViewModel(
+            productRepository = fakeProductRepository,
+            historyRepository = fakeHistoryRepository,
+        )
 
         viewModel.uiState.test {
             assertEquals(ProductUiState.Idle, awaitItem())
@@ -91,6 +105,41 @@ class ProductViewModelTest {
             advanceUntilIdle()
 
             assertEquals(ProductUiState.Success(product), awaitItem())
+            assertEquals(listOf(product), fakeHistoryRepository.savedProducts)
+        }
+    }
+
+    @Test
+    fun openSnapshot_whenHistoryHasItem_exposesSuccessWithoutNetworkSave() = runTest {
+        val product = Product(
+            code = "3017620422003",
+            name = "Nutella",
+            brand = "Ferrero",
+            allergens = "milk",
+            ingredients = "sugar",
+            nutriScore = 'E',
+            consultedAtEpochMillis = 1L,
+        )
+        val fakeHistoryRepository = FakeHistoryRepository().also {
+            it.saveOrUpdate(product)
+            it.savedProducts.clear()
+        }
+        val fakeProductRepository = FakeProductRepository {
+            error("Network lookup must not be called for history reopen")
+        }
+        val viewModel = ProductViewModel(
+            productRepository = fakeProductRepository,
+            historyRepository = fakeHistoryRepository,
+        )
+
+        viewModel.uiState.test {
+            assertEquals(ProductUiState.Idle, awaitItem())
+
+            viewModel.openSnapshot("3017620422003")
+            advanceUntilIdle()
+
+            assertEquals(ProductUiState.Success(product), awaitItem())
+            assertTrue(fakeHistoryRepository.savedProducts.isEmpty())
         }
     }
 }

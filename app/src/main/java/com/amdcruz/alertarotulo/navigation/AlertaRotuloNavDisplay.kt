@@ -7,7 +7,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.amdcruz.alertarotulo.history.ui.HistoryListPlaceholderScreen
+import com.amdcruz.alertarotulo.history.ui.HistoryRoute
 import com.amdcruz.alertarotulo.product.ui.ProductLookupRoute
 import com.amdcruz.alertarotulo.scan.ui.ManualEntryScreen
 import com.amdcruz.alertarotulo.scan.ui.ScanCaptureRoute
@@ -15,6 +15,12 @@ import com.amdcruz.alertarotulo.scan.ui.ScanCaptureRoute
 @Composable
 fun AlertaRotuloNavDisplay() {
     val backStack = rememberNavBackStack(ScanRoute)
+
+    fun popToScan() {
+        while (backStack.size > 1) {
+            backStack.removeLastOrNull()
+        }
+    }
 
     NavDisplay(
         backStack = backStack,
@@ -48,16 +54,17 @@ fun AlertaRotuloNavDisplay() {
             entry<ProductRoute> { key ->
                 ProductLookupRoute(
                     code = key.code,
+                    fromHistory = key.fromHistory,
                     onBack = { backStack.removeLastOrNull() },
-                    onNewSearch = {
-                        while (backStack.size > 1) {
-                            backStack.removeLastOrNull()
-                        }
-                    },
+                    onNewSearch = { popToScan() },
                 )
             }
             entry<HistoryRoute> {
-                HistoryListPlaceholderScreen(
+                HistoryRoute(
+                    onItemClick = { code ->
+                        backStack.add(ProductRoute(code = code, fromHistory = true))
+                    },
+                    onStartNewSearch = { popToScan() },
                     onBack = { backStack.removeLastOrNull() },
                 )
             }
