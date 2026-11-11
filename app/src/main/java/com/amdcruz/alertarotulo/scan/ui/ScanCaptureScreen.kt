@@ -14,9 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -37,6 +37,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.amdcruz.alertarotulo.R
+import com.amdcruz.alertarotulo.core.ui.components.PrimaryActionButton
+import com.amdcruz.alertarotulo.core.ui.components.SecondaryActionButton
 
 @Composable
 fun ScanCaptureScreen(
@@ -56,6 +58,7 @@ fun ScanCaptureScreen(
         )
     }
     var permissionRequested by remember { mutableStateOf(false) }
+    val cameraPreviewDescription = stringResource(R.string.scan_camera_preview_a11y)
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -101,7 +104,11 @@ fun ScanCaptureScreen(
                         onBarcodeDetected = { rawValue ->
                             viewModel.onBarcodeDetected(rawValue)
                         },
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .semantics {
+                                contentDescription = cameraPreviewDescription
+                            },
                     )
                     Column(
                         modifier = Modifier
@@ -115,18 +122,14 @@ fun ScanCaptureScreen(
                             text = stringResource(R.string.scan_instruction),
                             style = MaterialTheme.typography.bodyLarge,
                         )
-                        OutlinedButton(
+                        SecondaryActionButton(
+                            text = stringResource(R.string.action_enter_code_manually),
                             onClick = onOpenManualEntry,
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Text(stringResource(R.string.action_enter_code_manually))
-                        }
-                        OutlinedButton(
+                        )
+                        SecondaryActionButton(
+                            text = stringResource(R.string.action_open_history),
                             onClick = onOpenHistory,
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Text(stringResource(R.string.action_open_history))
-                        }
+                        )
                     }
                 }
             }
@@ -148,22 +151,16 @@ fun ScanCaptureScreen(
                         onOpenManualEntry = onOpenManualEntry,
                         modifier = Modifier.weight(1f),
                     )
-                    Button(
+                    PrimaryActionButton(
+                        text = stringResource(R.string.action_request_camera_permission),
                         onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                    ) {
-                        Text(stringResource(R.string.action_request_camera_permission))
-                    }
-                    OutlinedButton(
+                        modifier = Modifier.padding(horizontal = 24.dp),
+                    )
+                    SecondaryActionButton(
+                        text = stringResource(R.string.action_open_history),
                         onClick = onOpenHistory,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                    ) {
-                        Text(stringResource(R.string.action_open_history))
-                    }
+                        modifier = Modifier.padding(24.dp),
+                    )
                 }
             }
         }
