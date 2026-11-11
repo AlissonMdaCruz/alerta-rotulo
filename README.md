@@ -6,7 +6,7 @@ Sem conta, sem backend próprio e sem enviar a imagem do código para a nuvem. A
 
 ## Status
 
-MVP em preparação. O repositório contém a estrutura inicial do Android Studio e a documentação de produto/arquitetura.
+MVP implementado (fases 0–5). Fluxos principais: captura/digitação → consulta OFF → resultado → erros distintos → histórico local offline → UI em pt-BR/en.
 
 ## Documentação
 
@@ -17,7 +17,7 @@ MVP em preparação. O repositório contém a estrutura inicial do Android Studi
 | [`docs/architecture.md`](docs/architecture.md) | Camadas, stack, pacotes e integrações |
 | [`docs/design/style-reference.md`](docs/design/style-reference.md) | Referência visual para telas (orientação, não contrato rígido) |
 
-## Stack (direção)
+## Stack
 
 - Kotlin, Jetpack Compose, Material 3
 - Navigation 3, ViewModel, StateFlow, Coroutines, Hilt
@@ -35,7 +35,36 @@ Detalhes em [`docs/architecture.md`](docs/architecture.md).
 - Histórico das últimas 20 consultas no aparelho
 - Interface em **pt-BR** e **en**
 
-**Fora da v1:** lista de compras, conta de usuário, upload de imagens, foto do produto.
+**Fora da v1:** lista de compras, conta de usuário, upload de imagens, foto do produto, refresh de rede ao reabrir histórico, personalização de alergias, QR Code.
+
+## Idiomas
+
+- Recursos em `values` (inglês, fallback) e `values-pt` / `values-pt-rBR` (português)
+- Locale do sistema: português → UI em português; inglês → UI em inglês; demais → inglês
+- Texto do produto vindo da Open Food Facts **não** é traduzido pelo app
+
+## Acessibilidade (TalkBack)
+
+### Feito na v1
+
+- Hierarquia do resultado com **alergênicos antes** de ingredientes e demais campos
+- Headings semânticos nas seções principais (resultado, histórico, digitação, erros)
+- Labels / `contentDescription` em blocos críticos (alergênicos, Nutri-Score, preview da câmera)
+- Estados de erro e loading anunciáveis (`liveRegion`), sem depender só de cor
+- Botões de ação com altura mínima generosa (≥ 52 dp) nas telas principais
+- Permissão de câmera negada com texto claro + atalho para digitação e configurações
+- Layouts pensados para tipografia ampliada do sistema nas telas do fluxo principal
+- Contraste baseado no tema Material 3 do app (verde/alerta semânticos)
+
+### Fora da v1
+
+- Auditoria TalkBack de 100% dos edge cases do sistema Android
+- Foto do produto / Coil
+- Atualizar item do histórico pela rede
+- Seletor in-app de idioma
+- Temas customizados além do necessário para contraste no MVP
+- Personalização de restrições alimentares do usuário
+- Macrobenchmark / Baseline Profiles / testes de UI de navegação automatizados
 
 ## Requisitos
 
@@ -51,4 +80,4 @@ Detalhes em [`docs/architecture.md`](docs/architecture.md).
 
 ## Licença de dados
 
-Os dados de produto vêm da Open Food Facts (ODbL). O cliente HTTP deve identificar o app com User-Agent (nome + contato), conforme a política deles.
+Os dados de produto vêm da Open Food Facts (ODbL). O cliente HTTP identifica o app com User-Agent (nome + contato), conforme a política deles.
