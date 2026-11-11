@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">AlertaRotulo</string>
+    <string name="app_name">AlertaRótulo</string>
+    <string name="action_back">Back</string>
+    <string name="action_enter_code_manually">Enter code manually</string>
+    <string name="action_open_history">Open history</string>
+    <string name="action_open_sample_product">Open sample product screen</string>
+    <string name="scan_placeholder_title">Scan</string>
+    <string name="scan_placeholder_body">Camera scanning will be added in a later phase. Use the buttons below to verify navigation.</string>
+    <string name="manual_entry_placeholder_title">Manual entry</string>
+    <string name="manual_entry_placeholder_body">Barcode typing will be added in a later phase.</string>
+    <string name="product_placeholder_title">Product result</string>
+    <string name="product_placeholder_code">Code: %1$s</string>
+    <string name="history_placeholder_title">History</string>
+    <string name="history_placeholder_body">Local history will be added in a later phase.</string>
 </resources>
