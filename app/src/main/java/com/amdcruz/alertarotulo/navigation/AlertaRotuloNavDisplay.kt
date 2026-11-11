@@ -9,10 +9,8 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.amdcruz.alertarotulo.history.ui.HistoryListPlaceholderScreen
 import com.amdcruz.alertarotulo.product.ui.ProductLookupRoute
-import com.amdcruz.alertarotulo.scan.ui.ManualEntryPlaceholderScreen
-import com.amdcruz.alertarotulo.scan.ui.ScanCapturePlaceholderScreen
-
-private const val SAMPLE_PRODUCT_CODE: String = "3017620422003"
+import com.amdcruz.alertarotulo.scan.ui.ManualEntryScreen
+import com.amdcruz.alertarotulo.scan.ui.ScanCaptureRoute
 
 @Composable
 fun AlertaRotuloNavDisplay() {
@@ -27,21 +25,21 @@ fun AlertaRotuloNavDisplay() {
         ),
         entryProvider = entryProvider {
             entry<ScanRoute> {
-                ScanCapturePlaceholderScreen(
+                ScanCaptureRoute(
+                    onBarcodeValidated = { code ->
+                        backStack.add(ProductRoute(code = code))
+                    },
                     onOpenManualEntry = dropUnlessResumed {
                         backStack.add(ManualEntryRoute)
                     },
                     onOpenHistory = dropUnlessResumed {
                         backStack.add(HistoryRoute)
                     },
-                    onOpenSampleProduct = dropUnlessResumed {
-                        backStack.add(ProductRoute(code = SAMPLE_PRODUCT_CODE))
-                    },
                 )
             }
             entry<ManualEntryRoute> {
-                ManualEntryPlaceholderScreen(
-                    onSubmitCode = { code ->
+                ManualEntryScreen(
+                    onSubmitValidCode = { code ->
                         backStack.add(ProductRoute(code = code))
                     },
                     onBack = { backStack.removeLastOrNull() },
