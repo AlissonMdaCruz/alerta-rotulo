@@ -33,6 +33,7 @@ fun ProductScreen(
     onNewSearch: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    isFromHistory: Boolean = false,
 ) {
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         when (uiState) {
@@ -46,6 +47,7 @@ fun ProductScreen(
 
             is ProductUiState.Success -> SuccessContent(
                 product = uiState.product,
+                isFromHistory = isFromHistory,
                 onNewSearch = onNewSearch,
                 onBack = onBack,
                 modifier = Modifier
@@ -100,6 +102,7 @@ private fun LoadingContent(modifier: Modifier = Modifier) {
 @Composable
 private fun SuccessContent(
     product: Product,
+    isFromHistory: Boolean,
     onNewSearch: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -115,6 +118,13 @@ private fun SuccessContent(
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.semantics { heading() },
         )
+        if (isFromHistory) {
+            Text(
+                text = stringResource(R.string.product_saved_lookup_label),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
         AllergensSection(allergens = product.allergens)
         ProductField(
             label = stringResource(R.string.product_field_ingredients),

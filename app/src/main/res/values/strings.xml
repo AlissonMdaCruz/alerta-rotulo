@@ -33,10 +33,13 @@
     <string name="product_nutriscore_a11y">Nutri-Score %1$s</string>
     <string name="product_nutriscore_not_informed_a11y">Nutri-Score not informed</string>
     <string name="product_disclaimer">This information comes from Open Food Facts and does not replace reading the physical label. It is not medical advice.</string>
+    <string name="product_saved_lookup_label">Saved lookup · shown offline from history</string>
     <string name="product_not_found_title">Product not found</string>
     <string name="product_not_found_body">Open Food Facts has no product for code %1$s. Try another barcode.</string>
     <string name="product_network_error_title">Connection problem</string>
     <string name="product_network_error_body">Could not look up code %1$s. Check your connection and try again.</string>
-    <string name="history_placeholder_title">History</string>
-    <string name="history_placeholder_body">Local history will be added in a later phase.</string>
+    <string name="history_title">History</string>
+    <string name="history_empty_body">No successful lookups yet. Scan or type a barcode to start.</string>
+    <string name="history_item_unnamed">Unnamed product</string>
+    <string name="history_item_consulted_at">Looked up %1$s</string>
 </resources>
