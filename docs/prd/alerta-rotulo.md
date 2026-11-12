@@ -1,7 +1,7 @@
 # PRD — AlertaRótulo
 
 > Tipo: PRD inicial · Data: 2026-11-06
-> **Status:** Aguardando implementação
+> **Status:** Implementada
 >
 > <!-- Valores possíveis: "Aguardando implementação" | "Implementada". Atualize para "Implementada" quando todas as specs estiverem concluídas. -->
 
@@ -157,6 +157,8 @@ Em alto nível, alinhada a [`docs/architecture.md`](../architecture.md) e às re
 - **Módulos / pacotes:** um módulo `:app`; pacotes por função/feature
 
 Detalhes de camadas, pacotes, DI e integrações: ver `docs/architecture.md`.
+
+**Referência visual:** [`docs/design/style-reference.md`](../design/style-reference.md) orienta cores, tipografia e linguagem visual na criação das telas. É um guia de apoio — não precisa ser seguido à risca; prevalecem acessibilidade do PRD, Material 3 e decisões do `architecture.md` quando houver conflito.
 
 ## 11. Justificativa da stack
 
@@ -357,9 +359,9 @@ Specs:
 - **Fase:** 3 — Resultado acessível
 - **Objetivo (o quê):** Mostrar o produto encontrado com ordem de prioridade: alergênicos → ingredientes → demais dados (nome/marca/Nutri-Score), sem foto.
 - **Intenção (por quê):** Na decisão de “posso comer/usar?”, alergênicos importam primeiro; a hierarquia visual/semântica reduz risco de a informação crítica ficar enterrada.
-- **Contexto:** Consome ProdutoConsultado da Spec 01. Sem Coil/foto (decisão de produto da v1).
+- **Contexto:** Consome ProdutoConsultado da Spec 01. Sem Coil/foto (decisão de produto da v1). Orientação visual em `docs/design/style-reference.md` (flexível).
 - **Atores:** Pessoa usuária.
-- **Descrição do comportamento:** Após sucesso, a tela de resultado apresenta: identificação (nome e marca), bloco destacado de alergênicos, ingredientes, Nutri-Score A–E ou “Não informado”. Campos ausentes usam o rótulo de não informado. Deve ser possível voltar para nova busca. Conteúdo do produto como veio da base (sem traduzir).
+- **Descrição do comportamento:** Após sucesso, a tela de resultado apresenta: identificação (nome e marca), bloco destacado de alergênicos, ingredientes, Nutri-Score A–E ou “Não informado”. Campos ausentes usam o rótulo de não informado. Deve ser possível voltar para nova busca. Conteúdo do produto como veio da base (sem traduzir). Pode inspirar-se no style reference para hierarquia e contraste, sem copiar literalmente.
 - **Entradas e saídas:** Entrada: ProdutoConsultado. Saída: tela de detalhe compreensível.
 - **Dados/entidades envolvidos (conceitual):** ProdutoConsultado (Spec 01).
 - **Estados e transições:** Sucesso da consulta → Resultado. Voltar → Entrada (câmera/digitação).
@@ -384,7 +386,7 @@ Specs:
 - **Fase:** 3 — Resultado acessível
 - **Objetivo (o quê):** Garantir tipografia legível, contraste adequado e ordem de foco coerente nas telas principais (entrada, loading/erros, resultado, histórico), usáveis com TalkBack.
 - **Intenção (por quê):** Acessibilidade é requisito do produto, não polish. Sem isso, o app falha para parte do público-alvo.
-- **Contexto:** Aplica-se às UIs das Specs 02–06 e 08–09. Escopo finito: telas do fluxo principal do MVP.
+- **Contexto:** Aplica-se às UIs das Specs 02–06 e 08–09. Escopo finito: telas do fluxo principal do MVP. Style reference (`docs/design/style-reference.md`) pode informar contraste/tipografia, sem ser contrato rígido.
 - **Atores:** Pessoa usuária, inclusive com TalkBack.
 - **Descrição do comportamento:** Textos de interface usam tamanhos confortáveis e respeitam escala de fonte do sistema na medida do suportado pelas telas. Contraste de texto/fundo adequado. Elementos interativos têm rótulos acessíveis. A ordem de navegação por foco segue a prioridade de conteúdo (no resultado: alergênicos antes de blocos secundários). Estados de erro são anunciáveis (não só cor).
 - **Entradas e saídas:** Não se aplica (qualidade transversal da UI).

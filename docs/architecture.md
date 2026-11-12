@@ -4,10 +4,11 @@
 |---|---|
 | **Produto** | AlertaRótulo |
 | **Referência de produto** | [`docs/product-brief.md`](product-brief.md), [`docs/prd/alerta-rotulo.md`](prd/alerta-rotulo.md) |
+| **Referência visual** | [`docs/design/style-reference.md`](design/style-reference.md) (orientação para telas; não seguir à risca) |
 | **Status** | Diretrizes técnicas do MVP |
 | **Base normativa** | [Guide to app architecture](https://developer.android.com/topic/architecture) e [Architecture recommendations](https://developer.android.com/topic/architecture/recommendations) (Android Developers, atualizado 2026-10) |
 
-Este documento define **como** o MVP é estruturado. Comportamento de telas e regras de negócio ficam no PRD.
+Este documento define **como** o MVP é estruturado. Comportamento de telas e regras de negócio ficam no PRD. Aparência e tokens visuais usam o style reference como guia flexível.
 
 ---
 
@@ -69,6 +70,7 @@ Este documento define **como** o MVP é estruturado. Comportamento de telas e re
 ### 3.1 UI layer
 
 - Telas Compose + Material 3.
+- Visual: usar [`docs/design/style-reference.md`](design/style-reference.md) como **referência** (cores, tipografia, hierarquia). Não é especificação fechada — adaptar ao Material 3 e às restrições do MVP quando fizer sentido.
 - Um **ViewModel por tela/destino** relevante.
 - Expõe preferencialmente um `uiState: StateFlow<…UiState>` (data class ou sealed class quando estados forem exclusivos: Loading / Success / NotFound / NetworkError / …).
 - Coleta com `collectAsStateWithLifecycle()`.
@@ -325,3 +327,4 @@ UI navigation / Macrobenchmark / Baseline Profiles são recomendações Google d
 - [Navigation 3](https://developer.android.com/guide/navigation/navigation-3)
 - [Hilt in Android](https://developer.android.com/training/dependency-injection/hilt-android)
 - Open Food Facts API v2 — product endpoint + política de User-Agent
+- [`docs/design/style-reference.md`](design/style-reference.md) — referência visual das telas (flexível)
