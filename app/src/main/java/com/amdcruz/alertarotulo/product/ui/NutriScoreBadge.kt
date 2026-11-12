@@ -2,7 +2,6 @@ package com.amdcruz.alertarotulo.product.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -13,27 +12,30 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.amdcruz.alertarotulo.R
+import com.amdcruz.alertarotulo.core.ui.theme.AlertaRotuloThemeExtras
+import com.amdcruz.alertarotulo.core.ui.theme.forGrade
 
 @Composable
 fun NutriScoreBadge(
     nutriScore: Char?,
     modifier: Modifier = Modifier,
 ) {
-    val label = nutriScore?.toString()
+    val label = nutriScore?.uppercaseChar()?.toString()
         ?: stringResource(R.string.product_field_not_informed)
     val description = if (nutriScore != null) {
-        stringResource(R.string.product_nutriscore_a11y, nutriScore)
+        stringResource(R.string.product_nutriscore_a11y, nutriScore.uppercaseChar())
     } else {
         stringResource(R.string.product_nutriscore_not_informed_a11y)
     }
+    val colors = AlertaRotuloThemeExtras.nutriScoreColors.forGrade(nutriScore)
     Surface(
         modifier = modifier.semantics {
             contentDescription = description
         },
-        shape = RoundedCornerShape(8.dp),
-        color = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+        shape = MaterialTheme.shapes.small,
+        color = colors.container,
+        contentColor = colors.onContainer,
+        border = BorderStroke(2.dp, colors.border),
     ) {
         Text(
             text = label,

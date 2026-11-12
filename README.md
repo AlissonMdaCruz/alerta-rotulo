@@ -48,13 +48,16 @@ Detalhes em [`docs/architecture.md`](docs/architecture.md).
 ### Feito na v1
 
 - Hierarquia do resultado com **alergênicos antes** de ingredientes e demais campos
-- Headings semânticos nas seções principais (resultado, histórico, digitação, erros)
+- Headings semânticos nas seções principais (resultado, histórico, digitação, erros, scan)
 - Labels / `contentDescription` em blocos críticos (alergênicos, Nutri-Score, preview da câmera)
-- Estados de erro e loading anunciáveis (`liveRegion`), sem depender só de cor
-- Botões de ação com altura mínima generosa (≥ 52 dp) nas telas principais
+- Itens do histórico com descrição acessível unificada (um nó acionável por linha)
+- Estados de erro e loading anunciáveis (`liveRegion`), sem depender só de cor; sem double-announce título+corpo
+- Botões de ação com altura mínima generosa (≥ 52 dp), shape 16 dp e ícones decorativos rotulados pelo texto do botão
+- TopAppBar com navegação back nas telas secundárias (manual, produto, histórico)
 - Permissão de câmera negada com texto claro + atalho para digitação e configurações
-- Layouts pensados para tipografia ampliada do sistema nas telas do fluxo principal
-- Contraste baseado no tema Material 3 do app (verde/alerta semânticos)
+- Layouts com scroll nas telas principais para tipografia ampliada do sistema
+- Tipografia Atkinson Hyperlegible Next; contraste Material 3 + badges semânticos (texto + cor, nunca só cor)
+- Nutri-Score com cores A–E e rótulo textual; faixa de status informativa (alergênicos declarados / não informado), sem veredito clínico
 
 ### Fora da v1
 
@@ -63,7 +66,8 @@ Detalhes em [`docs/architecture.md`](docs/architecture.md).
 - Atualizar item do histórico pela rede
 - Seletor in-app de idioma
 - Temas customizados além do necessário para contraste no MVP
-- Personalização de restrições alimentares do usuário
+- Personalização de restrições alimentares do usuário / veredito “pode comer”
+- Feedback sonoro de captura além do háptico
 - Macrobenchmark / Baseline Profiles / testes de UI de navegação automatizados
 
 ## Requisitos

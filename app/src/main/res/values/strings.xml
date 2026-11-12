@@ -8,8 +8,14 @@
     <string name="action_retry">Try again</string>
     <string name="action_open_app_settings">Open app settings</string>
     <string name="action_request_camera_permission">Allow camera</string>
+    <string name="scan_title">Scan</string>
     <string name="scan_instruction">Point the camera at a product barcode. QR codes are ignored.</string>
     <string name="scan_camera_preview_a11y">Camera preview for barcode scanning</string>
+    <string name="product_status_allergens_declared">Declared allergens on label</string>
+    <string name="product_status_allergens_not_informed">Allergens not informed by the source</string>
+    <string name="history_item_a11y">%1$s. %2$s. %3$s</string>
+    <string name="history_item_has_allergens">Has declared allergens</string>
+    <string name="history_item_nutriscore">Nutri-Score %1$s</string>
     <string name="camera_permission_denied_title">Camera permission needed</string>
     <string name="camera_permission_denied_body">Scanning needs camera access. You can allow it in settings or type the barcode instead.</string>
     <string name="manual_entry_title">Manual entry</string>
@@ -18,6 +24,7 @@
     <string name="manual_entry_formats_hint">Accepted lengths: 8, 12, or 13 digits with a valid check digit.</string>
     <string name="manual_entry_invalid_code">Enter a valid EAN-8, EAN-13, or UPC-A barcode.</string>
     <string name="product_loading">Looking up product…</string>
+    <string name="product_loading_body">Fetching details from Open Food Facts.</string>
     <string name="product_result_title">Product</string>
     <string name="product_section_details">Product details</string>
     <string name="product_field_allergens">Allergens</string>
@@ -39,6 +46,7 @@
     <string name="product_network_error_title">Connection problem</string>
     <string name="product_network_error_body">Could not look up code %1$s. Check your connection and try again.</string>
     <string name="history_title">History</string>
+    <string name="history_empty_title">No lookups yet</string>
     <string name="history_empty_body">No successful lookups yet. Scan or type a barcode to start.</string>
     <string name="history_item_unnamed">Unnamed product</string>
     <string name="history_item_consulted_at">Looked up %1$s</string>

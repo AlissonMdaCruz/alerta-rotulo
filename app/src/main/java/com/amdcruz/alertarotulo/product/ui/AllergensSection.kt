@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,6 +21,8 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.amdcruz.alertarotulo.R
+import com.amdcruz.alertarotulo.core.ui.components.SemanticBadge
+import com.amdcruz.alertarotulo.core.ui.theme.AlertaRotuloThemeExtras
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -35,25 +37,13 @@ fun AllergensSection(
     } else {
         stringResource(R.string.product_allergens_not_informed_a11y)
     }
-    val containerColor = if (hasAllergens) {
-        MaterialTheme.colorScheme.errorContainer
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    }
-    val contentColor = if (hasAllergens) {
-        MaterialTheme.colorScheme.onErrorContainer
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
-    val borderColor = if (hasAllergens) {
-        MaterialTheme.colorScheme.error
-    } else {
-        MaterialTheme.colorScheme.outline
-    }
+    val semantic = AlertaRotuloThemeExtras.semanticColors
+    val panelColors = if (hasAllergens) semantic.critical else semantic.safe
+    val spacing = AlertaRotuloThemeExtras.spacing
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(spacing.sm),
     ) {
         Text(
             text = stringResource(R.string.product_field_allergens),
@@ -66,14 +56,14 @@ fun AllergensSection(
                 .semantics {
                     contentDescription = sectionDescription
                 },
-            shape = RoundedCornerShape(12.dp),
-            color = containerColor,
-            contentColor = contentColor,
-            border = BorderStroke(2.dp, borderColor),
+            shape = MaterialTheme.shapes.medium,
+            color = panelColors.container,
+            contentColor = panelColors.onContainer,
+            border = BorderStroke(2.dp, panelColors.border),
         ) {
             Column(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(spacing.md)
                     .clearAndSetSemantics { },
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
@@ -96,31 +86,15 @@ fun AllergensSection(
                             .map { it.trim() }
                             .filter { it.isNotEmpty() }
                             .forEach { allergen ->
-                                AllergenBadge(text = allergen)
+                                SemanticBadge(
+                                    text = allergen,
+                                    colors = semantic.critical,
+                                    icon = Icons.Filled.WarningAmber,
+                                )
                             }
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun AllergenBadge(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        modifier = modifier.heightIn(min = 36.dp),
-        shape = RoundedCornerShape(8.dp),
-        color = MaterialTheme.colorScheme.error,
-        contentColor = MaterialTheme.colorScheme.onError,
-        border = BorderStroke(2.dp, MaterialTheme.colorScheme.error),
-    ) {
-        Text(
-            text = text.uppercase(),
-            style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-        )
     }
 }

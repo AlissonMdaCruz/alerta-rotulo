@@ -8,8 +8,14 @@
     <string name="action_retry">Tentar de novo</string>
     <string name="action_open_app_settings">Abrir configurações do app</string>
     <string name="action_request_camera_permission">Permitir câmera</string>
+    <string name="scan_title">Escanear</string>
     <string name="scan_instruction">Aponte a câmera para o código de barras do produto. QR Codes são ignorados.</string>
     <string name="scan_camera_preview_a11y">Pré-visualização da câmera para leitura de código de barras</string>
+    <string name="product_status_allergens_declared">Alergênicos declarados no rótulo</string>
+    <string name="product_status_allergens_not_informed">Alergênicos não informados pela fonte</string>
+    <string name="history_item_a11y">%1$s. %2$s. %3$s</string>
+    <string name="history_item_has_allergens">Possui alergênicos declarados</string>
+    <string name="history_item_nutriscore">Nutri-Score %1$s</string>
     <string name="camera_permission_denied_title">Permissão de câmera necessária</string>
     <string name="camera_permission_denied_body">A leitura precisa de acesso à câmera. Você pode permitir nas configurações ou digitar o código.</string>
     <string name="manual_entry_title">Digitação manual</string>
@@ -18,6 +24,7 @@
     <string name="manual_entry_formats_hint">Comprimentos aceitos: 8, 12 ou 13 dígitos com dígito verificador válido.</string>
     <string name="manual_entry_invalid_code">Informe um código EAN-8, EAN-13 ou UPC-A válido.</string>
     <string name="product_loading">Consultando produto…</string>
+    <string name="product_loading_body">Buscando detalhes na Open Food Facts.</string>
     <string name="product_result_title">Produto</string>
     <string name="product_section_details">Detalhes do produto</string>
     <string name="product_field_allergens">Alergênicos</string>
@@ -39,6 +46,7 @@
     <string name="product_network_error_title">Problema de conexão</string>
     <string name="product_network_error_body">Não foi possível consultar o código %1$s. Verifique a conexão e tente de novo.</string>
     <string name="history_title">Histórico</string>
+    <string name="history_empty_title">Nenhuma consulta ainda</string>
     <string name="history_empty_body">Ainda não há consultas bem-sucedidas. Escaneie ou digite um código para começar.</string>
     <string name="history_item_unnamed">Produto sem nome</string>
     <string name="history_item_consulted_at">Consultado em %1$s</string>

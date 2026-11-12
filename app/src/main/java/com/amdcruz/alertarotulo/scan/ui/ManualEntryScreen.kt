@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -21,15 +23,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.error
-import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.amdcruz.alertarotulo.R
+import com.amdcruz.alertarotulo.core.ui.components.AppTopBar
 import com.amdcruz.alertarotulo.core.ui.components.PrimaryActionButton
-import com.amdcruz.alertarotulo.core.ui.components.SecondaryActionButton
+import com.amdcruz.alertarotulo.core.ui.components.ProductInfoCard
+import com.amdcruz.alertarotulo.core.ui.theme.AlertaRotuloThemeExtras
 import com.amdcruz.alertarotulo.scan.BarcodeValidator
 
 @Composable
@@ -42,6 +45,7 @@ fun ManualEntryScreen(
     var showValidationError by rememberSaveable { mutableStateOf(false) }
     val normalizedCode = BarcodeValidator.normalize(codeInput)
     val invalidMessage = stringResource(R.string.manual_entry_invalid_code)
+    val spacing = AlertaRotuloThemeExtras.spacing
 
     fun submit() {
         val validated = BarcodeValidator.validate(codeInput)
@@ -53,66 +57,77 @@ fun ManualEntryScreen(
         onSubmitValidCode(validated)
     }
 
-    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        topBar = {
+            AppTopBar(
+                title = stringResource(R.string.manual_entry_title),
+                onNavigateBack = onBack,
+            )
+        },
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .verticalScroll(rememberScrollState())
+                .padding(spacing.screenMarginWide),
+            verticalArrangement = Arrangement.spacedBy(spacing.md),
         ) {
-            Text(
-                text = stringResource(R.string.manual_entry_title),
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.semantics { heading() },
-            )
             Text(
                 text = stringResource(R.string.manual_entry_body),
                 style = MaterialTheme.typography.bodyLarge,
             )
-            OutlinedTextField(
-                value = codeInput,
-                onValueChange = { value ->
-                    codeInput = BarcodeValidator.normalize(value)
-                    showValidationError = false
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 56.dp)
-                    .then(
-                        if (showValidationError) {
-                            Modifier.semantics {
-                                error(invalidMessage)
-                                liveRegion = LiveRegionMode.Assertive
-                            }
-                        } else {
-                            Modifier
+            ProductInfoCard {
+                Column(
+                    modifier = Modifier.padding(spacing.md),
+                    verticalArrangement = Arrangement.spacedBy(spacing.sm),
+                ) {
+                    Text(
+                        text = stringResource(R.string.manual_entry_code_label),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                    OutlinedTextField(
+                        value = codeInput,
+                        onValueChange = { value ->
+                            codeInput = BarcodeValidator.normalize(value)
+                            showValidationError = false
                         },
-                    ),
-                label = { Text(stringResource(R.string.manual_entry_code_label)) },
-                supportingText = {
-                    if (showValidationError) {
-                        Text(invalidMessage)
-                    } else {
-                        Text(stringResource(R.string.manual_entry_formats_hint))
-                    }
-                },
-                isError = showValidationError,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done,
-                ),
-                keyboardActions = KeyboardActions(onDone = { submit() }),
-            )
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 52.dp)
+                            .then(
+                                if (showValidationError) {
+                                    Modifier.semantics {
+                                        error(invalidMessage)
+                                        liveRegion = LiveRegionMode.Assertive
+                                    }
+                                } else {
+                                    Modifier
+                                },
+                            ),
+                        supportingText = {
+                            if (showValidationError) {
+                                Text(invalidMessage)
+                            } else {
+                                Text(stringResource(R.string.manual_entry_formats_hint))
+                            }
+                        },
+                        isError = showValidationError,
+                        singleLine = true,
+                        shape = MaterialTheme.shapes.medium,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done,
+                        ),
+                        keyboardActions = KeyboardActions(onDone = { submit() }),
+                    )
+                }
+            }
             PrimaryActionButton(
                 text = stringResource(R.string.action_lookup_product),
                 onClick = { submit() },
                 enabled = normalizedCode.isNotEmpty(),
-            )
-            SecondaryActionButton(
-                text = stringResource(R.string.action_back),
-                onClick = onBack,
             )
         }
     }
